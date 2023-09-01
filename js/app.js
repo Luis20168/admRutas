@@ -1,10 +1,10 @@
 
-const mascotaInput = document.querySelector('#mascota');
-const propietarioInput = document.querySelector('#propietario');
-const telefonoInput = document.querySelector('#telefono');
-const fechaInput = document.querySelector('#fecha');
-const horaInput = document.querySelector('#hora');
-const sintomasInput = document.querySelector('#sintomas');
+const fotoVehiculo = document.querySelector('#mascota');
+const nombreVehiculo = document.querySelector('#propietario');
+const marcaVehiculo = document.querySelector('#telefono');
+const cilindrajeVehiculo = document.querySelector('#fecha');
+const placaVehiculo = document.querySelector('#hora');
+const soatVehiculo = document.querySelector('#sintomas');
 
 // Contenedor para las citas
 const contenedorCitas = document.querySelector('#citas');
@@ -19,11 +19,11 @@ let editando = false;
 // Eventos
 eventListeners();
 function eventListeners() {
-    mascotaInput.addEventListener('change', datosCita);
-    propietarioInput.addEventListener('change', datosCita);
-    telefonoInput.addEventListener('change', datosCita);
-    fechaInput.addEventListener('change', datosCita);
-    horaInput.addEventListener('change', datosCita);
+    fotoVehiculo.addEventListener('change', datosCita);
+    nombreVehiculo.addEventListener('change', datosCita);
+    marcaVehiculo.addEventListener('change', datosCita);
+    cilindrajeVehiculo.addEventListener('change', datosCita);
+    placaVehiculo.addEventListener('change', datosCita);
     sintomasInput.addEventListener('change', datosCita);
 }
 
@@ -230,11 +230,11 @@ function cargarEdicion(cita) {
     citaObj.id = id;
 
     // Llenar los Inputs
-    mascotaInput.value = mascota;
-    propietarioInput.value = propietario;
-    telefonoInput.value = telefono;
-    fechaInput.value = fecha;
-    horaInput.value = hora;
+    fotoVehiculo.value = mascota;
+    nombreVehiculo.value = propietario;
+    marcaVehiculo.value = telefono;
+    cilindrajeVehiculo.value = fecha;
+    placaVehiculo.value = hora;
     sintomasInput.value = sintomas;
 
     formulario.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
