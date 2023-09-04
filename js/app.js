@@ -1,10 +1,12 @@
 
-const fotoVehiculo = document.querySelector('#mascota');
-const nombreVehiculo = document.querySelector('#propietario');
-const marcaVehiculo = document.querySelector('#telefono');
-const cilindrajeVehiculo = document.querySelector('#fecha');
-const placaVehiculo = document.querySelector('#hora');
-const soatVehiculo = document.querySelector('#sintomas');
+const fotoVehiculo = document.querySelector('#fotoVehiculo');
+const nombreVehiculo = document.querySelector('#nombreVehiculo');
+const marcaVehiculo = document.querySelector('#marcaVehiculo');
+const cilindrajeVehiculo = document.querySelector('#cilindrajeVehiculo');
+const placaVehiculo = document.querySelector('#placaVehiculo');
+const soatVehiculo = document.querySelector('#soatVehiculo');
+const consumoCombustible= document.querySelector('#consumoCombustible');
+const descripcion= document.querySelector('#descripcion');
 
 // Contenedor para las citas
 const contenedorCitas = document.querySelector('#citas');
@@ -19,27 +21,38 @@ let editando = false;
 // Eventos
 eventListeners();
 function eventListeners() {
-    fotoVehiculo.addEventListener('change', datosCita);
+    fotoVehiculo.addEventListener('change', (e)=>{
+        citaObj[e.target.name] = e.target.files[0];
+        
+
+
+    } );
     nombreVehiculo.addEventListener('change', datosCita);
     marcaVehiculo.addEventListener('change', datosCita);
     cilindrajeVehiculo.addEventListener('change', datosCita);
     placaVehiculo.addEventListener('change', datosCita);
-    sintomasInput.addEventListener('change', datosCita);
+    soatVehiculo.addEventListener('change', datosCita);
+    consumoCombustible.addEventListener('change', datosCita);
+    descripcion.addEventListener('change', datosCita);
+
 }
 
 const citaObj = {
-    mascota: '',
-    propietario: '',
-    telefono: '',
-    fecha: '',
-    hora:'',
-    sintomas: ''
+    foto: '',
+    nombre: '',
+    marca: '',
+    cilindraje: '',
+    placa:'',
+    soat: '',
+    consumo: '',
+    descrip: ''
 }
 
 
 function datosCita(e) {
     //  console.log(e.target.name) // Obtener el Input
      citaObj[e.target.name] = e.target.value;
+     
 }
 
 // CLasses
@@ -89,31 +102,41 @@ class UI {
         this.limpiarHTML();
 
         citas.forEach(cita => {
-            const {mascota, propietario, telefono, fecha, hora, sintomas, id } = cita;
+            const {foto ,nombre,  marca, cilindraje, placa, soat, consumo, descrip, id } = cita;
 
             const divCita = document.createElement('div');
             divCita.classList.add('cita', 'p-3');
             divCita.dataset.id = id;
 
             // scRIPTING DE LOS ELEMENTOS...
-            const mascotaParrafo = document.createElement('h2');
-            mascotaParrafo.classList.add('card-title', 'font-weight-bolder');
-            mascotaParrafo.innerHTML = `${mascota}`;
+            const fotoVehiculoimg = document.createElement('img');
+            fotoVehiculoimg.classList.add('card-title', 'font-weight-bolder');
+            fotoVehiculoimg.style.width= '200px'
 
-            const propietarioParrafo = document.createElement('p');
-            propietarioParrafo.innerHTML = `<span class="font-weight-bolder">Propietario: </span> ${propietario}`;
+            const reader = new FileReader();
+            reader.onload= (e) => fotoVehiculoimg.src= e.target.result
+            reader.readAsDataURL(foto);
+           
+           
 
-            const telefonoParrafo = document.createElement('p');
-            telefonoParrafo.innerHTML = `<span class="font-weight-bolder">Teléfono: </span> ${telefono}`;
+            const nombreVehiculoParrafo = document.createElement('p');
+            nombreVehiculoParrafo.innerHTML = `<span class="font-weight-bolder">Nombre: </span> ${nombre}`;
 
-            const fechaParrafo = document.createElement('p');
-            fechaParrafo.innerHTML = `<span class="font-weight-bolder">Fecha: </span> ${fecha}`;
+            const  marcaVehiculoParrafo = document.createElement('p');
+            marcaVehiculoParrafo.innerHTML = `<span class="font-weight-bolder">Marca: </span> ${ marca}`;
 
-            const horaParrafo = document.createElement('p');
-            horaParrafo.innerHTML = `<span class="font-weight-bolder">Hora: </span> ${hora}`;
+            const cilindrajeVehiculoParrafo = document.createElement('p');
+            cilindrajeVehiculoParrafo.innerHTML = `<span class="font-weight-bolder">cilindrajeVehiculo: </span> ${cilindraje}`;
 
-            const sintomasParrafo = document.createElement('p');
-            sintomasParrafo.innerHTML = `<span class="font-weight-bolder">Síntomas: </span> ${sintomas}`;
+            const placaVehiculoParrafo = document.createElement('p');
+            placaVehiculoParrafo.innerHTML = `<span class="font-weight-bolder">placaVehiculo: </span> ${placa}`;
+
+            const soatVehiculoParrafo = document.createElement('p');
+            soatVehiculoParrafo.innerHTML = `<span class="font-weight-bolder">Soat: </span> ${soat}`;
+            const consumoCombustibleParrafo = document.createElement('p');
+            consumoCombustibleParrafo.innerHTML = `<span class="font-weight-bolder">Consumo: </span> ${consumo}`;
+            const descripcionParrafo = document.createElement('p');
+            descripcionParrafo.innerHTML = `<span class="font-weight-bolder">Descripcion: </span> ${descrip}`;
 
             // Agregar un botón de eliminar...
             const btnEliminar = document.createElement('button');
@@ -129,12 +152,16 @@ class UI {
             btnEditar.innerHTML = 'Editar <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>'
 
             // Agregar al HTML
-            divCita.appendChild(mascotaParrafo);
-            divCita.appendChild(propietarioParrafo);
-            divCita.appendChild(telefonoParrafo);
-            divCita.appendChild(fechaParrafo);
-            divCita.appendChild(horaParrafo);
-            divCita.appendChild(sintomasParrafo);
+            divCita.appendChild(fotoVehiculoimg);
+            divCita.appendChild(nombreVehiculoParrafo);
+            divCita.appendChild(marcaVehiculoParrafo);
+            divCita.appendChild(cilindrajeVehiculoParrafo);
+            divCita.appendChild(placaVehiculoParrafo);
+            divCita.appendChild(soatVehiculoParrafo);
+            divCita.appendChild(consumoCombustibleParrafo);
+            divCita.appendChild(descripcionParrafo);
+
+
             divCita.appendChild(btnEliminar)
             divCita.appendChild(btnEditar)
 
@@ -155,10 +182,10 @@ const administrarCitas = new Citas();
 function nuevaCita(e) {
     e.preventDefault();
 
-    const {mascota, propietario, telefono, fecha, hora, sintomas } = citaObj;
+    const {foto,nombre,  marca, cilindraje, placa, soat, consumo, descrip } = citaObj;
 
     // Validar
-    if( mascota === '' || propietario === '' || telefono === '' || fecha === ''  || hora === '' || sintomas === '' ) {
+    if(foto === '' ||nombre === '' ||  marca === '' || cilindraje=== ''  || placa === '' || soat === '' || consumo==='' || descrip==='' ) {
         ui.imprimirAlerta('Todos los mensajes son Obligatorios', 'error')
 
         return;
@@ -201,12 +228,19 @@ function nuevaCita(e) {
 
 function reiniciarObjeto() {
     // Reiniciar el objeto
-    citaObj.mascota = '';
-    citaObj.propietario = '';
-    citaObj.telefono = '';
-    citaObj.fecha = '';
-    citaObj.hora = '';
-    citaObj.sintomas = '';
+    
+
+    citaObj.fotoVehiculo= '';
+    citaObj.nombreVehiculo= '';
+    citaObj.marcaVehiculo= '';
+    citaObj.cilindrajeVehiculo= '';
+    citaObj.placaVehiculo='';
+    citaObj.soatVehiculo= '';
+    citaObj.consumoCombustible= '';
+    citaObj.descripcion= '';
+
+
+    
 }
 
 
@@ -218,24 +252,30 @@ function eliminarCita(id) {
 
 function cargarEdicion(cita) {
 
-    const {mascota, propietario, telefono, fecha, hora, sintomas, id } = cita;
+    const {foto,nombre,  marca, cilindraje, placa, soat, consumo, descrip, id } = cita;
 
     // Reiniciar el objeto
-    citaObj.mascota = mascota;
-    citaObj.propietario = propietario;
-    citaObj.telefono = telefono;
-    citaObj.fecha = fecha
-    citaObj.hora = hora;
-    citaObj.sintomas = sintomas;
+    citaObj.fotoVehiculo= foto;
+    citaObj.nombreVehiculo= nombre;
+    citaObj.marcaVehiculo= marca;
+    citaObj.cilindrajeVehiculo= cilindraje;
+    citaObj.placaVehiculo=placa;
+    citaObj.soatVehiculo= soat;
+    citaObj.consumoCombustible= consumo;
+    citaObj.descripcion= descrip;
+
     citaObj.id = id;
 
     // Llenar los Inputs
-    fotoVehiculo.value = mascota;
-    nombreVehiculo.value = propietario;
-    marcaVehiculo.value = telefono;
-    cilindrajeVehiculo.value = fecha;
-    placaVehiculo.value = hora;
-    sintomasInput.value = sintomas;
+    
+    fotoVehiculo.src =foto;
+    nombreVehiculo.value =nombre;
+    marcaVehiculo.value =  marca;
+    cilindrajeVehiculo.value = cilindraje;
+    placaVehiculo.value = placa;
+    soatVehiculo.value = soat;
+    consumoCombustible.value= consumo;
+    descripcion.value= descrip;
 
     formulario.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
 
