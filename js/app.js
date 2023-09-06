@@ -8,6 +8,35 @@ const soatVehiculo = document.querySelector('#soatVehiculo');
 const consumoCombustible= document.querySelector('#consumoCombustible');
 const descripcion= document.querySelector('#descripcion');
 
+
+
+
+// Crear una instancia de Citas
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+    const ui = new UI();
+    let administrarCitas= new Citas;
+    
+    administrarCitas = JSON.parse(localStorage.getItem('rutas')) || []
+    console.table(administrarCitas)
+
+    // ui.imprimirCitas(administrarCitas);
+    
+       
+});
+
+
+
+
+
+
+//imagen 
+const img= document.querySelector('.img')
+
+//fin imagen
 // Contenedor para las citas
 const contenedorCitas = document.querySelector('#citas');
 
@@ -18,11 +47,34 @@ formulario.addEventListener('submit', nuevaCita);
 let editando = false;
 
 
+
+
+
+
+
 // Eventos
 eventListeners();
 function eventListeners() {
     fotoVehiculo.addEventListener('change', (e)=>{
-        citaObj[e.target.name] = e.target.files[0];
+        const foto= e.target.files[0]
+
+        if(foto){
+            rutaObj[e.target.name] = e.target.files[0];
+            mostrarFoto(foto);
+
+        }
+        else{
+            console.log('No hay foto')
+            img.src= './img/up.png'
+        }
+
+        
+        
+        
+
+        
+        
+        
         
 
 
@@ -37,7 +89,7 @@ function eventListeners() {
 
 }
 
-const citaObj = {
+const rutaObj = {
     foto: '',
     nombre: '',
     marca: '',
@@ -49,28 +101,61 @@ const citaObj = {
 }
 
 
+function mostrarFoto(foto){
+    
+    console.log('hay')
+    const reader = new FileReader();
+    reader.onload= function(e){
+        img.src= e.target.result;
+        
+    }
+    reader.readAsDataURL(foto)
+        
+
+}
+   
+
+
+
 function datosCita(e) {
     //  console.log(e.target.name) // Obtener el Input
-     citaObj[e.target.name] = e.target.value;
+     rutaObj[e.target.name] = e.target.value;
      
 }
 
 // CLasses
-class Citas {
+ class Citas {
     constructor() {
         this.citas = []
+        
     }
     agregarCita(cita) {
         this.citas = [...this.citas, cita];
+        agregarStorage(this.citas)
+        
+        
     }
     editarCita(citaActualizada) {
         this.citas = this.citas.map( cita => cita.id === citaActualizada.id ? citaActualizada : cita)
+        agregarStorage(this.citas)
     }
 
     eliminarCita(id) {
         this.citas = this.citas.filter( cita => cita.id !== id);
+        agregarStorage(this.citas)
     }
+    
+
+    
+    
 }
+
+
+
+
+
+
+
 
 class UI {
     imprimirAlerta(mensaje, tipo) {
@@ -98,7 +183,7 @@ class UI {
    }
 
    imprimirCitas({citas}) { // Se puede aplicar destructuring desde la función...
-       
+       console.table(citas)
         this.limpiarHTML();
 
         citas.forEach(cita => {
@@ -177,12 +262,17 @@ class UI {
 }
 
 const ui = new UI();
-const administrarCitas = new Citas();
+let administrarCitas = new Citas();
+
+
+
+
+
 
 function nuevaCita(e) {
     e.preventDefault();
 
-    const {foto,nombre,  marca, cilindraje, placa, soat, consumo, descrip } = citaObj;
+    const {foto,nombre,  marca, cilindraje, placa, soat, consumo, descrip } = rutaObj;
 
     // Validar
     if(foto === '' ||nombre === '' ||  marca === '' || cilindraje=== ''  || placa === '' || soat === '' || consumo==='' || descrip==='' ) {
@@ -193,22 +283,26 @@ function nuevaCita(e) {
 
     if(editando) {
         // Estamos editando
-        administrarCitas.editarCita( {...citaObj} );
+        administrarCitas.editarCita( {...rutaObj} );
+        console.log(administrarCitas)
 
         ui.imprimirAlerta('Guardado Correctamente');
 
         formulario.querySelector('button[type="submit"]').textContent = 'Crear Cita';
+        
 
         editando = false;
+        
 
     } else {
         // Nuevo Registrando
 
         // Generar un ID único
-        citaObj.id = Date.now();
+        rutaObj.id = Date.now();
         
         // Añade la nueva cita
-        administrarCitas.agregarCita({...citaObj});
+        administrarCitas.agregarCita({...rutaObj});
+        
 
         // Mostrar mensaje de que todo esta bien...
         ui.imprimirAlerta('Se agregó correctamente')
@@ -222,7 +316,15 @@ function nuevaCita(e) {
     reiniciarObjeto();
 
     // Reiniciar Formulario
-    formulario.reset();
+    //nueva funcion añadida se restea la img 
+    reset();
+    function reset(){
+        formulario.reset();
+        img.src= './img/up.png'
+        
+
+    }
+    
 
 }
 
@@ -230,14 +332,14 @@ function reiniciarObjeto() {
     // Reiniciar el objeto
     
 
-    citaObj.fotoVehiculo= '';
-    citaObj.nombreVehiculo= '';
-    citaObj.marcaVehiculo= '';
-    citaObj.cilindrajeVehiculo= '';
-    citaObj.placaVehiculo='';
-    citaObj.soatVehiculo= '';
-    citaObj.consumoCombustible= '';
-    citaObj.descripcion= '';
+    rutaObj.fotoVehiculo= '';
+    rutaObj.nombreVehiculo= '';
+    rutaObj.marcaVehiculo= '';
+    rutaObj.cilindrajeVehiculo= '';
+    rutaObj.placaVehiculo='';
+    rutaObj.soatVehiculo= '';
+    rutaObj.consumoCombustible= '';
+    rutaObj.descripcion= '';
 
 
     
@@ -255,20 +357,27 @@ function cargarEdicion(cita) {
     const {foto,nombre,  marca, cilindraje, placa, soat, consumo, descrip, id } = cita;
 
     // Reiniciar el objeto
-    citaObj.fotoVehiculo= foto;
-    citaObj.nombreVehiculo= nombre;
-    citaObj.marcaVehiculo= marca;
-    citaObj.cilindrajeVehiculo= cilindraje;
-    citaObj.placaVehiculo=placa;
-    citaObj.soatVehiculo= soat;
-    citaObj.consumoCombustible= consumo;
-    citaObj.descripcion= descrip;
+    rutaObj.fotoVehiculo= foto;
+    rutaObj.nombreVehiculo= nombre;
+    rutaObj.marcaVehiculo= marca;
+    rutaObj.cilindrajeVehiculo= cilindraje;
+    rutaObj.placaVehiculo=placa;
+    rutaObj.soatVehiculo= soat;
+    rutaObj.consumoCombustible= consumo;
+    rutaObj.descripcion= descrip;
 
-    citaObj.id = id;
+    rutaObj.id = id;
 
     // Llenar los Inputs
+
     
-    fotoVehiculo.src =foto;
+    const reader2 = new FileReader();
+    reader2.onload= function(e){img.src= e.target.result;}  
+    reader2.readAsDataURL(foto);
+
+   
+    
+
     nombreVehiculo.value =nombre;
     marcaVehiculo.value =  marca;
     cilindrajeVehiculo.value = cilindraje;
@@ -282,3 +391,13 @@ function cargarEdicion(cita) {
     editando = true;
 
 }
+
+
+
+
+function agregarStorage(citas) {
+    localStorage.setItem('rutas', JSON.stringify(citas));
+    
+  }
+
+ 
