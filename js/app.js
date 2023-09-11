@@ -14,19 +14,6 @@ const descripcion= document.querySelector('#descripcion');
 // Crear una instancia de Citas
 
 
-document.addEventListener('DOMContentLoaded', () => {
-
-
-    const ui = new UI();
-    let administrarCitas= new Citas;
-    
-    administrarCitas = JSON.parse(localStorage.getItem('rutas')) || []
-    console.table(administrarCitas)
-
-    // ui.imprimirCitas(administrarCitas);
-    
-       
-});
 
 
 
@@ -101,9 +88,12 @@ const rutaObj = {
 }
 
 
+
+
 function mostrarFoto(foto){
     
     console.log('hay')
+    console.log(rutaObj)
     const reader = new FileReader();
     reader.onload= function(e){
         img.src= e.target.result;
@@ -123,32 +113,75 @@ function datosCita(e) {
      
 }
 
+
+
+
+
 // CLasses
  class Citas {
     constructor() {
-        this.citas = []
+
+        
+
+        let local= JSON.parse(localStorage.getItem('rutas'))
+        console.log(local) 
+        this.citas =  local || [];
+        // this.citas= [];
+
+
+        
+
+        
+        
         
     }
     agregarCita(cita) {
         this.citas = [...this.citas, cita];
-        agregarStorage(this.citas)
+        this.agregarStorage();
+        console.log(this.citas)
+        
+        
         
         
     }
     editarCita(citaActualizada) {
         this.citas = this.citas.map( cita => cita.id === citaActualizada.id ? citaActualizada : cita)
-        agregarStorage(this.citas)
+        this.agregarStorage();
+        
+        
     }
 
     eliminarCita(id) {
         this.citas = this.citas.filter( cita => cita.id !== id);
-        agregarStorage(this.citas)
+        this.agregarStorage();
+        
+        
     }
+
+    agregarStorage() {
+        localStorage.setItem('rutas', JSON.stringify(this.citas));
+        
+    }
+    obtenerCitas() {
+        return this.citas;
+    }
+    
+
+    
     
 
     
     
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -183,8 +216,7 @@ class UI {
    }
 
    imprimirCitas({citas}) { // Se puede aplicar destructuring desde la función...
-       console.table(citas)
-        this.limpiarHTML();
+    this.limpiarHTML();
 
         citas.forEach(cita => {
             const {foto ,nombre,  marca, cilindraje, placa, soat, consumo, descrip, id } = cita;
@@ -197,10 +229,19 @@ class UI {
             const fotoVehiculoimg = document.createElement('img');
             fotoVehiculoimg.classList.add('card-title', 'font-weight-bolder');
             fotoVehiculoimg.style.width= '200px'
+           
+            if(foto){
+                console.log(foto[0])
+                const reader = new FileReader();
+                reader.onload= (e) => fotoVehiculoimg.src= e.target.result
+                reader.readAsDataURL(foto);
 
-            const reader = new FileReader();
-            reader.onload= (e) => fotoVehiculoimg.src= e.target.result
-            reader.readAsDataURL(foto);
+            }
+            else{
+                console.log('foto mala')
+            }
+
+            
            
            
 
@@ -251,7 +292,9 @@ class UI {
             divCita.appendChild(btnEditar)
 
             contenedorCitas.appendChild(divCita);
-        });    
+        });  
+        
+       
    }
 
    limpiarHTML() {
@@ -263,6 +306,17 @@ class UI {
 
 const ui = new UI();
 let administrarCitas = new Citas();
+
+
+//imprime informacion desde el local
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    ui.imprimirCitas(administrarCitas)
+
+    
+
+});
+
 
 
 
@@ -311,6 +365,7 @@ function nuevaCita(e) {
 
     // Imprimir el HTML de citas
     ui.imprimirCitas(administrarCitas);
+    
 
     // Reinicia el objeto para evitar futuros problemas de validación
     reiniciarObjeto();
@@ -395,9 +450,11 @@ function cargarEdicion(cita) {
 
 
 
-function agregarStorage(citas) {
-    localStorage.setItem('rutas', JSON.stringify(citas));
-    
-  }
+
+
+
+
+
+
 
  
