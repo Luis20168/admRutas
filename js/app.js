@@ -230,16 +230,16 @@ class UI {
             fotoVehiculoimg.classList.add('card-title', 'font-weight-bolder');
             fotoVehiculoimg.style.width= '200px'
            
-            if(foto){
-                console.log(foto[0])
-                const reader = new FileReader();
-                reader.onload= (e) => fotoVehiculoimg.src= e.target.result
-                reader.readAsDataURL(foto);
+            // if(foto){
+            //     console.log(foto[0])
+            //     const reader = new FileReader();
+            //     reader.onload= (e) => fotoVehiculoimg.src= e.target.result
+            //     reader.readAsDataURL(foto);
 
-            }
-            else{
-                console.log('foto mala')
-            }
+            // }
+            // else{
+            //     console.log('foto mala')
+            // }
 
             
            
